@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Liste der Geisternetze</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <style>
+        th, td {
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+<h1>Erfasste Geisternetze</h1>
+
+<table id="geisternetze" class="display" style="width:100%">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Größe (m²)</th>
+            <th>Koordinaten</th>
+            <th>Status</th>
+            <th>Gemeldet von</th>
+            <th>Eingetragen zur Bergung</th>
+            <th>Geborgen von</th>
+        </tr>
+        <tr class="filters">
+            <td></td> <!-- Keine Filterung für ID -->
+            <td><select><option value="">Alle</option></select></td>
+            <td><select><option value="">Alle</option></select></td>
+            <td><select><option value="">Alle</option></select></td>
+            <td><select><option value="">Alle</option></select></td>
+            <td><select><option value="">Alle</option></select></td>
+            <td><select><option value="">Alle</option></select></td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="netz : ${netze}">
+            <td th:text="${netz.id}"></td>
+            <td th:text="${netz.estimatedSize}"></td>
+            <td th:text="${netz.latitude + ', ' + netz.longitude}"></td>
+            <td th:text="${netz.status}"></td>
+            <td th:text="${netz.reportingPerson != null ? netz.reportingPerson.name : 'ANONYM'}"></td>
+
+			<!-- Eingetragen zur Bergung -->
+			<td>
+			    <span th:if="${netz.recoveringPerson != null}" th:text="${netz.recoveringPerson.name}"></span>
+			    <span th:if="${netz.status.name() == 'GEMELDET'}">
+			        <form th:action="@{'/netze/uebernehmen/' + ${netz.id}}" method="post">
+			            <input type="text" name="name" placeholder="Name" required>
+			            <input type="text" name="phone" placeholder="Telefon" required>
+			            <button type="submit">Ich übernehme</button>
+			        </form>
+			    </span>
+			</td>			
+			<!-- Geborgen von -->
+			<td>
+			    <span th:if="${netz.status.name() == 'GEBORGEN'}" th:text="${netz.recoveringPerson.name}"></span>
+			    <span th:if="${netz.status.name() == 'BERGUNG_BEVORSTEHEND'}">
+			        <form th:action="@{'/netze/geborgen/' + ${netz.id}}" method="post">
+			            <input type="text" name="name" placeholder="Dein Name" required>
+			            <input type="text" name="phone" placeholder="Telefonnummer" required>
+			            <button type="submit">Als geborgen melden</button>
+			        </form>
+			    </span>
+			</td>
+        </tr>
+    </tbody>
+</table>
+
+<script>
+$(document).ready(function () {
+    const table = $('#geisternetze').DataTable({
+        orderCellsTop: true,
+        fixedHeader: true,
+        searching: true, // optional, aber zur Sicherheit
+        dom: 'lfrtip',
+        initComplete: function () {
+            const api = this.api();
+
+            api.columns().every(function (colIdx) {
+                const select = $('.filters td').eq(colIdx).find('select');
+                if (!select.length || colIdx === 0) return;
+
+                this.nodes().each(function (cell) {
+                    const text = $(cell).clone().find('form, button, input').remove().end().text().trim();
+                    if (text.length > 0 && select.find("option[value='" + text + "']").length === 0) {
+                        select.append($('<option>').val(text).text(text));
+                    }
+                });
+
+                select.on('change', function () {
+                    const val = $.fn.dataTable.util.escapeRegex($(this).val());
+                    api.column(colIdx)
+                        .search(val ? '^' + val + '$' : '', true, false)
+                        .draw();
+                });
+            });
+        }
+
+
+    });
+});
+</script>
+</body>
+</html>

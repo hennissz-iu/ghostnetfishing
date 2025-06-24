@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Geisternetz erfassen</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>Geisternetz erfassen</h1>
+
+<form th:action="@{/netze/erfassen}" method="post">
+    <!-- GhostNet Fields -->
+    <label>Breitengrad:</label>
+    <input type="text" name="latitude" th:value="${ghostNet.latitude}" required><br>
+
+    <label>Längengrad:</label>
+    <input type="text" name="longitude" th:value="${ghostNet.longitude}" required><br>
+
+    <label>Geschätzte Größe (in m²):</label>
+    <input type="number" step="0.1" name="estimatedSize" th:value="${ghostNet.estimatedSize}" required><br>
+
+    <hr>
+
+    <!-- Meldende Person (verschachtelt!) -->
+	<h2>Meldende Person</h2>
+	
+	<label>
+	    <input type="checkbox" id="anonymousCheckbox" name="ghostNet.reportingPerson.anonymous" onchange="togglePersonFields()"> Anonym melden
+	</label>
+	<br><br>
+	
+	<div id="personFields">
+	    <label>Name:</label>
+	    <input type="text" name="ghostNet.reportingPerson.name" placeholder="Name"><br>
+	
+	    <label>Telefonnummer:</label>
+	    <input type="text" name="ghostNet.reportingPerson.phone" placeholder="Telefon"><br>
+	</div>
+    <br>
+    <button type="submit">Melden</button>
+</form>
+
+<!-- Success Message -->
+<div th:if="${success}">
+    <p><strong>Netz wurde erfolgreich erfasst!</strong></p>
+</div>
+
+<script>
+    function togglePersonFields() {
+        const checked = document.getElementById('anonymousCheckbox').checked;
+        document.getElementById('personFields').style.display = checked ? 'none' : 'block';
+    }
+
+    // Falls Seite neu geladen wird und Checkbox schon aktiv ist
+    window.onload = togglePersonFields;
+</script>
+</body>
+</html>
