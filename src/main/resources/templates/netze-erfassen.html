@@ -3,52 +3,74 @@
 <head>
     <title>Geisternetz erfassen</title>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+	<link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
-<h1>Geisternetz erfassen</h1>
 
-<form th:action="@{/netze/erfassen}" method="post">
-    <!-- GhostNet Fields -->
-    <label>Breitengrad:</label>
-    <input type="text" name="latitude" th:value="${ghostNet.latitude}" required><br>
+<main class="container">
+	<div th:replace="fragments/navbar :: *"></div>
 
-    <label>Längengrad:</label>
-    <input type="text" name="longitude" th:value="${ghostNet.longitude}" required><br>
+	<h1>Geisternetz erfassen</h1>
 
-    <label>Geschätzte Größe (in m²):</label>
-    <input type="number" step="0.1" name="estimatedSize" th:value="${ghostNet.estimatedSize}" required><br>
 
-    <hr>
-
-    <!-- Meldende Person (verschachtelt!) -->
-	<h2>Meldende Person</h2>
+	<form th:action="@{/netze/erfassen}" method="post">
+	    
+	    <!-- Abschnitt Koordinaten -->
+	    <fieldset>
+	        <legend>Informationen zum Geisternetz</legend>
 	
-	<label>
-	    <input type="checkbox" id="anonymousCheckbox" name="ghostNet.reportingPerson.anonymous" onchange="togglePersonFields()"> Anonym melden
-	</label>
-	<br><br>
+	        <label for="latitude">Breitengrad:</label>
+	        <input type="text" id="latitude" name="latitude" th:value="${ghostNet.latitude}" placeholder="z. B. 46.235197" required>
 	
-	<div id="personFields">
-	    <label>Name:</label>
-	    <input type="text" name="ghostNet.reportingPerson.name" placeholder="Name"><br>
+	        <label for="longitude">Längengrad:</label>
+	        <input type="text" id="longitude" name="longitude" th:value="${ghostNet.longitude}" placeholder="z. B. 8.015445" required>
 	
-	    <label>Telefonnummer:</label>
-	    <input type="text" name="ghostNet.reportingPerson.phone" placeholder="Telefon"><br>
+	        <label>Geschätzte Größe (in m²):</label>
+	        <input type="number" name="estimatedSize" th:value="${ghostNet.estimatedSize}" step="0.5" min="0.5" required>
+	    </fieldset>
+	
+	<!-- Abschnitt Meldende Person -->
+	    <fieldset>
+	        <legend>Meldende Person</legend>
+	
+	        <label for="anonymousCheckbox">
+	            <input type="checkbox" id="anonymousCheckbox" name="ghostNet.reportingPerson.anonymous" onchange="togglePersonFields()"> Anonym melden
+	        </label>
+	
+	        <div id="personFields">
+	            <label for="name">Name:</label>
+	            <input type="text" id="name" name="ghostNet.reportingPerson.name" placeholder="Name">
+	
+	            <label for="phone">Telefonnummer:</label>
+	            <input type="text" id="phone" name="ghostNet.reportingPerson.phone" placeholder="Telefon">
+	        </div>
+	    </fieldset>
+	
+	    
+	    <button type="submit">Melden</button>
+	</form>
+
+
+	<!-- Success Message -->
+	<div th:if="${success}">
+		<article data-theme="success">Netz wurde erfolgreich erfasst!</article>
 	</div>
-    <br>
-    <button type="submit">Melden</button>
-</form>
-
-<!-- Success Message -->
-<div th:if="${success}">
-    <p><strong>Netz wurde erfolgreich erfasst!</strong></p>
-</div>
+  
+</main>
 
 <script>
-    function togglePersonFields() {
-        const checked = document.getElementById('anonymousCheckbox').checked;
-        document.getElementById('personFields').style.display = checked ? 'none' : 'block';
-    }
+	function togglePersonFields() {
+	    const checked = document.getElementById('anonymousCheckbox').checked;
+	    const personFields = document.getElementById('personFields');
+	    personFields.style.display = checked ? 'none' : 'block';
+	
+	    // Felder auch deaktivieren
+	    Array.from(personFields.querySelectorAll('input')).forEach(input => {
+	        input.disabled = checked;
+	    });
+	}
+
 
     // Falls Seite neu geladen wird und Checkbox schon aktiv ist
     window.onload = togglePersonFields;

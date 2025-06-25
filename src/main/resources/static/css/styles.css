@@ -1,0 +1,31 @@
+body {
+    font-size: 14px;
+}
+
+h1 {
+    font-size: 32px;
+}
+
+label, input, button, select {
+    font-size: 14px;
+}
+
+legend, th{
+	font-size: 18px;
+	font-weight: 600 !important;
+}
+
+/* Größe der Eingabefelder */
+input[type="text"],
+input[type="number"],
+input[type="tel"],
+input[type="email"] {
+    font-size: 14px;
+    height: 40px;
+}
+
+/* Größe von Buttons */
+button {
+    font-size: 14px !important;
+ 	padding: 10px !important;
+}
