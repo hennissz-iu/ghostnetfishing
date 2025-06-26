@@ -9,9 +9,10 @@
 <body>
 
 <main class="container">
-	<div th:replace="fragments/navbar :: *"></div>
+	<div th:replace="~{fragments/navbar}"></div>
 
-	<h1>Geisternetz erfassen</h1>
+
+	<h1>Geisternetz melden</h1>
 
 
 	<form th:action="@{/netze/erfassen}" method="post">

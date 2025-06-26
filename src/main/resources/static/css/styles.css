@@ -11,11 +11,11 @@ label, input, button, select {
 }
 
 legend, th{
-	font-size: 18px;
+	font-size: 16px;
 	font-weight: 600 !important;
 }
 
-/* Größe der Eingabefelder */
+
 input[type="text"],
 input[type="number"],
 input[type="tel"],
@@ -24,7 +24,7 @@ input[type="email"] {
     height: 40px;
 }
 
-/* Größe von Buttons */
+
 button {
     font-size: 14px !important;
  	padding: 10px !important;
