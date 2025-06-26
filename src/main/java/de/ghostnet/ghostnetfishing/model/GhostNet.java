@@ -16,11 +16,11 @@ public class GhostNet {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     private Person reportingPerson;
 
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     private Person recoveringPerson;
 
     public enum Status {
