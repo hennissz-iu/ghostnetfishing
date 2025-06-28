@@ -1,109 +1,115 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Liste der Geisternetze</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Liste der Geisternetze</title>
+
+    <!-- --- CSS first (keeps render-blocking small) --- -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
-	<link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
 
 <main class="container">
-	<div th:replace="~{fragments/navbar}"></div>
+    <div th:replace="~{fragments/navbar}"></div>
 
-	<h1>Erfasste Geisternetze</h1>
+    <h1>Erfasste Geisternetze</h1>
 
+    <table id="netzeTable" class="display" style="width:100%">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Größe (m²)</th>
+            <th scope="col">Koordinaten</th>
+            <th scope="col">Status</th>
+            <th scope="col">Gemeldet von</th>
+            <th scope="col">Eingetragen zur Bergung</th>
+            <th scope="col">Geborgen von</th>
+        </tr>
 
-	<table id="geisternetze" class="display" style="width:100%">
-	    <thead>
-	        <tr>
-	            <th>ID</th>
-	            <th>Größe (m²)</th>
-	            <th>Koordinaten</th>
-	            <th>Status</th>
-	            <th>Gemeldet von</th>
-	            <th>Eingetragen zur Bergung</th>
-	            <th>Geborgen von</th>
-	        </tr>
-	        <tr class="filters">
-	            <td></td> <!-- Keine Filterung für ID -->
-	            <td><select><option value="">Alle</option></select></td>
-	            <td><select><option value="">Alle</option></select></td>
-	            <td><select><option value="">Alle</option></select></td>
-	            <td><select><option value="">Alle</option></select></td>
-	            <td><select><option value="">Alle</option></select></td>
-	            <td><select><option value="">Alle</option></select></td>
-	        </tr>
-	    </thead>
-	    <tbody>
-	        <tr th:each="netz : ${netze}">
-	            <td th:text="${netz.id}"></td>
-	            <td th:text="${netz.estimatedSize}"></td>
-	            <td th:text="${netz.latitude + ', ' + netz.longitude}"></td>
-	            <td th:text="${netz.status}"></td>
-	            <td th:text="${netz.reportingPerson != null ? netz.reportingPerson.name : 'ANONYM'}"></td>
-	
-				<!-- Eingetragen zur Bergung -->
-				<td>
-				    <span th:if="${netz.recoveringPerson != null}" th:text="${netz.recoveringPerson.name}"></span>
-				    <span th:if="${netz.status.name() == 'GEMELDET'}">
-				        <form th:action="@{'/netze/uebernehmen/' + ${netz.id}}" method="post">
-				            <input type="text" name="name" placeholder="Name" required>
-				            <input type="text" name="phone" placeholder="Telefon" required>
-				            <button type="submit">Ich übernehme</button>
-				        </form>
-				    </span>
-				</td>			
-				<!-- Geborgen von -->
-				<td>
-				    <span th:if="${netz.status.name() == 'GEBORGEN'}" th:text="${netz.recoveringPerson.name}"></span>
-				    <span th:if="${netz.status.name() == 'BERGUNG_BEVORSTEHEND'}">
-				        <form th:action="@{'/netze/geborgen/' + ${netz.id}}" method="post">
-				            <input type="text" name="name" placeholder="Dein Name" required>
-				            <input type="text" name="phone" placeholder="Telefonnummer" required>
-				            <button type="submit">Als geborgen melden</button>
-				        </form>
-				    </span>
-				</td>
-	        </tr>
-	    </tbody>
-	</table>
+        <!-- filter row (index 0 = ID → no filter) -->
+        <tr class="filters">
+            <td></td>
+            <td th:each="i : ${#numbers.sequence(1,6)}">
+                <select><option value="">Alle</option></select>
+            </td>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="netz : ${netze}">
+            <td th:text="${netz.id}"></td>
+            <td th:text="${netz.estimatedSize}"></td>
+            <td th:text="${netz.latitude + ', ' + netz.longitude}"></td>
+            <td th:text="${netz.status}"></td>
+
+            <!-- Gemeldet von -->
+            <td th:text="${netz.reportingPerson != null ? netz.reportingPerson.name : 'ANONYM'}"></td>
+
+            <!-- Eingetragen zur Bergung -->
+            <td>
+                <span th:if="${netz.recoveringPerson != null}" th:text="${netz.recoveringPerson.name}"></span>
+
+                <form th:if="${netz.status.name() == 'GEMELDET'}"
+                      th:action="@{'/netze/uebernehmen/' + ${netz.id}}" method="post" class="stack">
+                    <input type="text" name="name" placeholder="Mein Name" required>
+                    <input type="text" name="phone" placeholder="Meine Telefonnummer" required>
+                    <button type="submit" class="secondary">Ich übernehme</button>
+                </form>
+            </td>
+
+            <!-- Geborgen von -->
+            <td>
+                <span th:if="${netz.status.name() == 'GEBORGEN'}" th:text="${netz.recoveringPerson.name}"></span>
+
+                <form th:if="${netz.status.name() == 'BERGUNG_BEVORSTEHEND'}"
+                      th:action="@{'/netze/geborgen/' + ${netz.id}}" method="post" class="stack">
+                    <input type="text" name="name" placeholder="Mein Name" required>
+                    <input type="text" name="phone" placeholder="Meine Telefonnummer" required>
+                    <button type="submit" class="contrast">Als geborgen melden</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </main>
 
-<script>
-$(document).ready(function () {
-    const table = $('#geisternetze').DataTable({
+<!-- --- JS at the end; “defer” avoids render-blocking --- -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js" defer></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js" defer></script>
+
+<script defer>
+document.addEventListener('DOMContentLoaded', () => {
+    const $table = $('#netzeTable').DataTable({
         orderCellsTop: true,
-        fixedHeader: true,
-        searching: true, // optional, aber zur Sicherheit
-        dom: 'lfrtip',
-        initComplete: function () {
+        fixedHeader  : true,
+        dom          : 'lfrtip',
+        initComplete() {
             const api = this.api();
 
-            api.columns().every(function (colIdx) {
-                const select = $('.filters td').eq(colIdx).find('select');
-                if (!select.length || colIdx === 0) return;
+            /* build one <select> for each column except ID (idx 0) */
+            api.columns().eq(0).each(colIdx => {
+                if (colIdx === 0) return;                         // no filter for ID
+                const $select = $('.filters select').eq(colIdx - 1);
 
-                this.nodes().each(function (cell) {
-                    const text = $(cell).clone().find('form, button, input').remove().end().text().trim();
-                    if (text.length > 0 && select.find("option[value='" + text + "']").length === 0) {
-                        select.append($('<option>').val(text).text(text));
+                // collect unique, trimmed cell text (strip potential form html)
+                api.column(colIdx).data().unique().each(val => {
+                    const text = $('<div>').html(val)
+                                           .find('form,button,input').remove().end()
+                                           .text().trim();
+                    if (text && !$select.find(`option[value="${text}"]`).length) {
+                        $select.append(`<option value="${text}">${text}</option>`);
                     }
                 });
 
-                select.on('change', function () {
-                    const val = $.fn.dataTable.util.escapeRegex($(this).val());
-                    api.column(colIdx)
-                        .search(val ? '^' + val + '$' : '', true, false)
-                        .draw();
+                $select.on('change', function () {
+                    const v = $.fn.dataTable.util.escapeRegex(this.value);
+                    api.column(colIdx).search(v ? `^${v}$` : '', true, false).draw();
                 });
             });
         }
-
-
     });
 });
 </script>

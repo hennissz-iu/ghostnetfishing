@@ -20,12 +20,12 @@ input[type="text"],
 input[type="number"],
 input[type="tel"],
 input[type="email"] {
-    font-size: 14px;
-    height: 40px;
+    font-size: 14px !important;
+    height: 30px !important;
 }
 
 
 button {
     font-size: 14px !important;
- 	padding: 10px !important;
+ 	padding: 5px !important;
 }

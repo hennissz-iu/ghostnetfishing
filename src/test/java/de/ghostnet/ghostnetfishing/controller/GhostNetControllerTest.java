@@ -43,7 +43,7 @@ class GhostNetControllerTest {
 
         when(personRepo.findByNameAndPhone("Lisa","123")).thenReturn(Optional.empty());
 
-        controller.erfasseNetz(netz, redirect);
+        controller.saveNet(netz, redirect);
 
         verify(personRepo).save(neu);                 // neue Person gespeichert
         verify(ghostNetRepo).save(netz);              // Netz gespeichert
@@ -67,7 +67,7 @@ class GhostNetControllerTest {
 
         when(personRepo.findByNameAndPhone("Tom","456")).thenReturn(Optional.of(exist));
 
-        controller.erfasseNetz(netz, redirect);
+        controller.saveNet(netz, redirect);
 
         verify(personRepo, never()).save(any());      // nichts Neues gespeichert
         assertSame(exist, netz.getReportingPerson()); // exist. Person verknüpft
@@ -82,7 +82,7 @@ class GhostNetControllerTest {
         GhostNet netz = new GhostNet();
         netz.setReportingPerson(anonym);
 
-        controller.erfasseNetz(netz, redirect);
+        controller.saveNet(netz, redirect);
 
         verify(personRepo, never()).save(any());
         assertNull(netz.getReportingPerson());        // Feld wurde geleert

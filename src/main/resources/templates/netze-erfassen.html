@@ -22,10 +22,10 @@
 	        <legend>Informationen zum Geisternetz</legend>
 	
 	        <label for="latitude">Breitengrad:</label>
-	        <input type="text" id="latitude" name="latitude" th:value="${ghostNet.latitude}" placeholder="z. B. 46.235197" required>
+	        <input type="number" id="latitude" name="latitude" th:value="${ghostNet.latitude}" placeholder="z. B. 46.235197" step="any" min="-90" max="90" required>
 	
 	        <label for="longitude">Längengrad:</label>
-	        <input type="text" id="longitude" name="longitude" th:value="${ghostNet.longitude}" placeholder="z. B. 8.015445" required>
+	        <input type="number" id="longitude" name="longitude" th:value="${ghostNet.longitude}" placeholder="z. B. 8.015445" step="any" min="-180" max="180" required>
 	
 	        <label>Geschätzte Größe (in m²):</label>
 	        <input type="number" name="estimatedSize" th:value="${ghostNet.estimatedSize}" step="0.5" min="0.5" required>
