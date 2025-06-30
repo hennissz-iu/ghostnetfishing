@@ -21,17 +21,17 @@
 	    <fieldset>
 	        <legend>Informationen zum Geisternetz</legend>
 	
-	        <label for="latitude">Breitengrad:</label>
-	        <input type="number" id="latitude" name="latitude" th:value="${ghostNet.latitude}" placeholder="z. B. 46.235197" step="any" min="-90" max="90" required>
-	
-	        <label for="longitude">Längengrad:</label>
-	        <input type="number" id="longitude" name="longitude" th:value="${ghostNet.longitude}" placeholder="z. B. 8.015445" step="any" min="-180" max="180" required>
-	
-	        <label>Geschätzte Größe (in m²):</label>
-	        <input type="number" name="estimatedSize" th:value="${ghostNet.estimatedSize}" step="0.5" min="0.5" required>
+			<label for="latitude">Breitengrad:</label>
+			<input type="number" id="latitude" name="latitude" placeholder="z. B. 46.235197" step="any" min="-90" max="90" required>
+			
+			<label for="longitude">Längengrad:</label>
+			<input type="number" id="longitude" name="longitude" placeholder="z. B. 8.015445" step="any" min="-180" max="180" required>
+			
+			<label>Geschätzte Größe (in m²):</label>
+			<input type="number" name="estimatedSize" step="0.5" min="0.5" required>
 	    </fieldset>
 	
-	<!-- Abschnitt Meldende Person -->
+		<!-- Abschnitt Meldende Person -->
 	    <fieldset>
 	        <legend>Meldende Person</legend>
 	

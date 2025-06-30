@@ -29,3 +29,30 @@ button {
     font-size: 14px !important;
  	padding: 5px !important;
 }
+
+
+.icon-check {
+  color: var(--success, green);
+  font-weight: bold;
+}
+
+
+.alert {
+  padding: 0.75em 1em;
+  border-radius: 4px;
+  margin-bottom: 1em;
+  font-weight: bold;
+}
+
+.alert.success {
+  background-color: #e6f4ea;
+  color: #276738;
+  border: 1px solid #b7e0c0;
+}
+
+
+.alert.error {
+  background-color: #fbeaea;
+  color: #b30000;
+  border: 1px solid #e0b7b7;
+}
