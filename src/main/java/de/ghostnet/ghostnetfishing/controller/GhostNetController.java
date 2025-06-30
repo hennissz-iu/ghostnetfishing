@@ -8,10 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/**
- * MVC-Controller: delegiert Geschäfts­aktionen an GhostNetService
- * und steuert Navigation + View-Model.
- */
+
 @Controller
 @RequestMapping("/netze")
 public class GhostNetController {
@@ -61,9 +58,7 @@ public class GhostNetController {
         return "redirect:/netze/liste";
     }
     
-    
-    
-
+     
     @PostMapping("/geborgen/{id}")
     public String markRecovered(@PathVariable Long id,
                                 @RequestParam String name,

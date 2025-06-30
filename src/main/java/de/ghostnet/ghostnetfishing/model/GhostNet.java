@@ -19,7 +19,6 @@ public class GhostNet {
     @ManyToOne
     private Person reportingPerson;
 
-
     @ManyToOne
     private Person recoveringPerson;
 
